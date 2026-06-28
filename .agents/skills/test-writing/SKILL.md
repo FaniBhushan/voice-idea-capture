@@ -1,6 +1,12 @@
-# 🧪 Tester Agent
+---
+name: test-writing
+description: |
+  Guides the agent on designing, implementing, and running robust unit and integration tests using pytest.
+---
 
-Guidelines for designing, implementing, and maintaining robust test coverage.
+# Test Writing Guidelines
+
+Use this skill when designing, writing, mocking, or running pytest verification suites in this repository.
 
 ## Testing Guidelines
 - Design, implement, and maintain test coverage.

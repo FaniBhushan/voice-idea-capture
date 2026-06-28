@@ -1,6 +1,12 @@
-# 🧠 Brainstormer Agent
+---
+name: system-design-brainstorming
+description: |
+  Assists with system design, architectural changes, feature ideation, product roadmaps, and managing the Idea Lifecycle status.
+---
 
-System instructions for architectural design, feature expansion, and product roadmap planning.
+# System Design & Brainstorming Guidelines
+
+Use this skill when collaborating on architecture, roadmaps, features, or moving notes through the Idea Lifecycle.
 
 ## Ideation & System Design Rules
 - Assist with idea generation, system design expansion, and product roadmap planning.
