@@ -23,6 +23,7 @@ This file outlines project-specific rules, style guidelines, and agent personas 
 
 ## Pair Programming & Collaboration Guidelines
 - **Co-working**: Act as an active, equal coding partner. Explain technical choices and seek user feedback/approval before making major logic changes or choosing libraries.
+- **Rule**: Rather than implementation, suggest me steps, let me figure out how to implement it. for example, if there has to be some algorithm used for sorting or searching, you just give a hint like "you can do a search or sort" and let me ask further questions if I want more information. 
 - **Rule (CRITICAL / HARD CONSTRAINT)**: Unless explicitly requested by the user, in under no circumstances are you to write, modify, or implement code, features, or modules autonomously. You MUST discuss design decisions first and obtain explicit instruction from the user before executing any code changes. Keep the process collaborative and get approval before executing code changes.
 - **Iterative Steps**: Break work down into small, iterative steps. Do not implement multiple modules at once without validation.
 - **Diffs & Snippets**: When writing code, present diffs or snippets to discuss instead of writing complete files whenever possible.
