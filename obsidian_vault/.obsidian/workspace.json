@@ -1,0 +1,199 @@
+{
+  "main": {
+    "id": "9aa2da1c9d032f02",
+    "type": "split",
+    "children": [
+      {
+        "id": "cdbd02b65d4ebb28",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "ad89444ae7507316",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Photo Gallery Curation and Duplicate Removal.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Photo Gallery Curation and Duplicate Removal"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "081d7405720c1569",
+    "type": "split",
+    "children": [
+      {
+        "id": "b2a06c8b0006df0c",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "daae585b4ce0529c",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Files"
+            }
+          },
+          {
+            "id": "0018c33b6deb3505",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Search"
+            }
+          },
+          {
+            "id": "cda38c10a3b5ac1a",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Bookmarks"
+            }
+          }
+        ],
+        "currentTab": 1
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "8a6118c1a36e8239",
+    "type": "split",
+    "children": [
+      {
+        "id": "2f7789eb4dbe0471",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "125770dd085b4e9c",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "Photo Gallery Curation and Duplicate Removal.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Backlinks for Photo Gallery Curation and Duplicate Removal"
+            }
+          },
+          {
+            "id": "8929fdf7f3d4ff4d",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "Photo Gallery Curation and Duplicate Removal.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Outgoing links from Photo Gallery Curation and Duplicate Removal"
+            }
+          },
+          {
+            "id": "a9382a7d6c7e3d51",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Tags"
+            }
+          },
+          {
+            "id": "d0144849d73d07c9",
+            "type": "leaf",
+            "state": {
+              "type": "all-properties",
+              "state": {
+                "sortOrder": "frequency",
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-archive",
+              "title": "All properties"
+            }
+          },
+          {
+            "id": "08e2dd3ddf3887c3",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "Photo Gallery Curation and Duplicate Removal.md",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Outline of Photo Gallery Curation and Duplicate Removal"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false,
+      "bases:Create new base": false
+    }
+  },
+  "active": "ad89444ae7507316",
+  "lastOpenFiles": [
+    "New Idea Placeholder.md",
+    "Project Conversion for Test Idea.md",
+    "Basic Test Idea.md",
+    "Test Idea to Project Conversion.md",
+    "Initial Test Idea.md",
+    "Simple Test Idea.md",
+    "Simple Test Idea Capture.md",
+    "Basic Test Idea Capture.md",
+    "Local Python Script for Text File Enrichment with Gemini API.md"
+  ]
+}

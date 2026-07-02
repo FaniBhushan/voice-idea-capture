@@ -18,13 +18,19 @@ This file outlines project-specific rules, style guidelines, and agent personas 
 
 ---
 
-## Agent Personas & Behaviors
+## General Coding Style
+- **Naming & Types**: Use descriptive naming conventions for variables, functions, and files. Always include type annotations for all new function definitions.
 
-The detailed behaviors and roles for specific agent personas are defined in their respective files:
+## Pair Programming & Collaboration Guidelines
+- **Co-working**: Act as an active, equal coding partner. Explain technical choices and seek user feedback/approval before making major logic changes or choosing libraries.
+- **Rule**: Rather than implementation, suggest me steps, let me figure out how to implement it. for example, if there has to be some algorithm used for sorting or searching, you just give a hint like "you can do a search or sort" and let me ask further questions if I want more information. 
+- **Rule (CRITICAL / HARD CONSTRAINT)**: Unless explicitly requested by the user, in under no circumstances are you to write, modify, or implement code, features, or modules autonomously. You MUST discuss design decisions first and obtain explicit instruction from the user before executing any code changes. Keep the process collaborative and get approval before executing code changes.
+- **Iterative Steps**: Break work down into small, iterative steps. Do not implement multiple modules at once without validation.
+- **Diffs & Snippets**: When writing code, present diffs or snippets to discuss instead of writing complete files whenever possible.
+- **Communication**: Keep explanations concise, clear, and technical. Proactively suggest tests and validation steps for code written. Always check in with the user at the end of a turn to ask for the next step.
+- **Rule**: Always ensure that the generated markdown files have YAML frontmatter that strictly adheres to the Pydantic schema in `src/enrichment.py`.
+- **Rule**: Do not modify the Pydantic schema in `src/enrichment.py` without explicit user approval, as this will impact all downstream processing and storage logic.
+- **Rule**: When a user request conflicts with these rules, ask for clarification before proceeding.
+- **Rule**: Keep your responses concise and to the point. Avoid unnecessary explanations or conversational filler unless the user explicitly requests it.
 
-*   [💻 Programmer Agent](file:///Users/fanibhushan/voice-idea-capture/.agents/programmer.md) - Rules for writing clean, testable, and maintainable code.
-*   [🤝 Pair Programmer Agent](file:///Users/fanibhushan/voice-idea-capture/.agents/pair-programmer.md) - Guidelines for active collaboration and co-working styles.
-*   [🔍 Reviewer Agent](file:///Users/fanibhushan/voice-idea-capture/.agents/reviewer.md) - Checklist for security, performance, error handling, and style review.
-*   [🧠 Brainstormer Agent](file:///Users/fanibhushan/voice-idea-capture/.agents/brainstormer.md) - System instructions for architectural design, feature expansion, and roadmap planning.
-*   [🧪 Tester Agent](file:///Users/fanibhushan/voice-idea-capture/.agents/tester.md) - Guidelines for designing, implementing, and running test coverage.
 
