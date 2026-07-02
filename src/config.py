@@ -18,14 +18,14 @@ def resolve_path(env_var: str, default_val: str) ->Path:
         default_val: The default value to use if the env var is not set
     """
     val = os.getenv(env_var, default_val)
-    path: Path = Path(val)
+    path: Path = Path(val).expanduser()
     if not path.is_absolute():
         path = (PROJECT_ROOT/path).resolve()
     return path
 
-OBSIDIAN_VAULT_PATH: Path = resolve_path("OBSIDIAN_VAULT_PATH", "obsidian_vault") 
-PROCESSED_DIR: Path = resolve_path("PROCESSED_DIR", "processed")
-INPUT_DIR: Path = resolve_path("INPUT_DIR", "input")
+OBSIDIAN_VAULT_PATH: Path = resolve_path("OBSIDIAN_VAULT_PATH", "~/Documents/Obsidian Vault/voice-idea-capture") 
+PROCESSED_DIR: Path = resolve_path("PROCESSED_DIR", "~/.voice-idea-capture/processed")
+INPUT_DIR: Path = resolve_path("INPUT_DIR", "~/.voice-idea-capture/input")
 
 def ensure_directories() -> None:
     """Ensure all directories exist, creating them if necessary"""
