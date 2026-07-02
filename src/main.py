@@ -1,8 +1,10 @@
 import sys
 import shutil
 import re
+import argparse
+import subprocess
 from pathlib import Path
-from src.config import INPUT_DIR, PROCESSED_DIR, OBSIDIAN_VAULT_PATH
+from src.config import INPUT_DIR, PROCESSED_DIR, OBSIDIAN_VAULT_PATH, PROJECT_ROOT
 from src.enrichment import enrich_note
 from src.vault_manager import VaultManager
 from src.watcher import watch_input_directory
@@ -35,7 +37,7 @@ def parse_frontmatter(content: str) -> dict:
                 current_key = key
     return data
 
-def process_file(file_path: Path, vault_manager: VaultManager):
+def process_file(file_path: Path, vault_manager: VaultManager, processed_dir: Path = PROCESSED_DIR):
     """Orchestrates the ingestion, enrichment, saving, and archiving of a single file."""
     print(f"\nProcessing: {file_path.name}")
     try:
@@ -53,17 +55,33 @@ def process_file(file_path: Path, vault_manager: VaultManager):
         print(f"Saved to: {saved_path}")
 
         # Ensure processed directory exists
-        PROCESSED_DIR.mkdir(parents=True, exist_ok=True)
+        processed_dir.mkdir(parents=True, exist_ok=True)
         # Move raw file to archive
-        shutil.move(str(file_path), str(PROCESSED_DIR / file_path.name))
-        print(f"Archived original file to: {PROCESSED_DIR / file_path.name}")
+        shutil.move(str(file_path), str(processed_dir / file_path.name))
+        print(f"Archived original file to: {processed_dir / file_path.name}")
     except Exception as e:
         print(f"Error processing {file_path.name}: {e}")
 
-def run_command():
-    """Processes all files currently in the input directory."""
-    vault_manager = VaultManager(OBSIDIAN_VAULT_PATH)
-    input_files = [f for f in INPUT_DIR.glob("*") if f.is_file() and f.suffix in [".txt", ".md"]]
+def run_command(input_dir: Path = INPUT_DIR, processed_dir: Path = PROCESSED_DIR, vault_path: Path = OBSIDIAN_VAULT_PATH):
+    """Processes all files currently in the input directory, after syncing from Apple Notes."""
+    # Trigger Apple Notes Sync first
+    applescript_path = PROJECT_ROOT / "shortcuts/export_ideas.applescript"
+    print(f"Syncing notes from Apple Notes...")
+    try:
+        result = subprocess.run(
+            ["osascript", str(applescript_path)],
+            capture_output=True,
+            text=True,
+            check=True
+        )
+        export_count = int(result.stdout.strip() or 0)
+        if export_count > 0:
+            print(f"Exported {export_count} new note(s) from Apple Notes.")
+    except Exception as e:
+        print(f"Warning: Apple Notes sync failed: {e}")
+
+    vault_manager = VaultManager(vault_path)
+    input_files = [f for f in input_dir.glob("*") if f.is_file() and f.suffix in [".txt", ".md"]]
     
     if not input_files:
         print("No pending voice notes in the input folder.")
@@ -71,25 +89,25 @@ def run_command():
 
     print(f"Found {len(input_files)} file(s) to process.")
     for file_path in input_files:
-        process_file(file_path, vault_manager)
+        process_file(file_path, vault_manager, processed_dir)
 
-def watch_command():
+def watch_command(input_dir: Path = INPUT_DIR, processed_dir: Path = PROCESSED_DIR, vault_path: Path = OBSIDIAN_VAULT_PATH):
     """Starts the watcher to process new files automatically as they arrive."""
-    vault_manager = VaultManager(OBSIDIAN_VAULT_PATH)
+    vault_manager = VaultManager(vault_path)
     
     def file_change_callback(file_path_str: str):
         file_path = Path(file_path_str)
         if file_path.exists() and file_path.is_file():
-            process_file(file_path, vault_manager)
+            process_file(file_path, vault_manager, processed_dir)
 
-    print(f"Starting watcher on folder: {INPUT_DIR}")
+    print(f"Starting watcher on folder: {input_dir}")
     print("Press Ctrl+C to exit.")
-    watch_input_directory(file_change_callback, INPUT_DIR)
+    watch_input_directory(file_change_callback, input_dir)
 
-def status_command():
+def status_command(vault_path: Path = OBSIDIAN_VAULT_PATH):
     """Scans the vault and shows statistics of the notes."""
-    vault_manager = VaultManager(OBSIDIAN_VAULT_PATH)
-    notes = list(OBSIDIAN_VAULT_PATH.glob("*.md"))
+    vault_manager = VaultManager(vault_path)
+    notes = list(vault_path.glob("*.md"))
     
     if not notes:
         print("\nNo notes found in the Obsidian Vault.")
@@ -132,23 +150,52 @@ def status_command():
     print("==================================\n")
 
 def main():
-    if len(sys.argv) < 2:
-        print("Voice Idea Capture CLI")
-        print("Usage: python3 src/main.py [run|watch|status]")
-        sys.exit(1)
-        
-    command = sys.argv[1].lower()
+    parser = argparse.ArgumentParser(description="Voice Idea Capture CLI")
     
-    if command == "run":
-        run_command()
-    elif command == "watch":
-        watch_command()
-    elif command == "status":
-        status_command()
-    else:
-        print(f"Unknown command: '{command}'")
-        print("Usage: python3 src/main.py [run|watch|status]")
-        sys.exit(1)
+    # Optional parameters to override configuration paths
+    parser.add_argument(
+        "--input-dir", "-i",
+        type=str,
+        default=str(INPUT_DIR),
+        help=f"Directory where raw transcripts are placed (default: {INPUT_DIR})"
+    )
+    parser.add_argument(
+        "--processed-dir", "-p",
+        type=str,
+        default=str(PROCESSED_DIR),
+        help=f"Directory where processed transcripts are archived (default: {PROCESSED_DIR})"
+    )
+    parser.add_argument(
+        "--vault-path", "-v",
+        type=str,
+        default=str(OBSIDIAN_VAULT_PATH),
+        help=f"Path to the Obsidian vault directory (default: {OBSIDIAN_VAULT_PATH})"
+    )
+    
+    # Subcommands
+    subparsers = parser.add_subparsers(dest="command", required=True, help="Command to run")
+    subparsers.add_parser("run", help="Process pending transcripts once")
+    subparsers.add_parser("watch", help="Watch directory in real-time")
+    subparsers.add_parser("status", help="Check current vault dashboard status")
+    
+    args = parser.parse_args()
+    
+    # Resolve paths (expand ~)
+    input_path = Path(args.input_dir).expanduser()
+    processed_path = Path(args.processed_dir).expanduser()
+    vault_path = Path(args.vault_path).expanduser()
+    
+    # Ensure directories exist
+    input_path.mkdir(parents=True, exist_ok=True)
+    processed_path.mkdir(parents=True, exist_ok=True)
+    vault_path.mkdir(parents=True, exist_ok=True)
+    
+    if args.command == "run":
+        run_command(input_path, processed_path, vault_path)
+    elif args.command == "watch":
+        watch_command(input_path, processed_path, vault_path)
+    elif args.command == "status":
+        status_command(vault_path)
 
 if __name__ == "__main__":
     main()

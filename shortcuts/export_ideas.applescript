@@ -1,90 +1,59 @@
--- AppleScript: Unified Idea Pipeline and Vault Status
--- Usage:
---   osascript shortcuts/export_ideas.applescript         (Default: Export and Ingest notes)
---   osascript shortcuts/export_ideas.applescript run     (Explicitly run export and ingest)
---   osascript shortcuts/export_ideas.applescript status  (Directly display vault status)
+-- AppleScript: Export Apple Notes tagged with @idea
+-- This script queries macOS Notes, writes the raw contents of @idea notes to files in the input folder,
+-- and moves the processed notes to a "Processed Ideas" folder in Apple Notes to prevent duplicates.
+-- Returns the count of exported notes.
 
 -- CONFIGURATION
-property projectInputPath : "/Users/fanibhushan/voice-idea-capture/input/"
+property projectInputPath : "/Users/fanibhushan/.voice-idea-capture/input/"
 
-on run argv
-    set action to "run"
-    if (count of argv) > 0 then
-        set action to item 1 of argv
+tell application "Notes"
+    -- Check if "Processed Ideas" folder exists, create it if not
+    if not (exists folder "Processed Ideas") then
+        make new folder with properties {name:"Processed Ideas"}
     end if
     
-    if action is "status" then
-        my showVaultStatus()
-    else
-        my exportNotesAndIngest()
-    end if
-end run
-
-on showVaultStatus()
-    try
-        set statusOutput to do shell script "cd /Users/fanibhushan/voice-idea-capture && .venv/bin/python -m src.main status"
-        display dialog statusOutput buttons {"OK"} default button "OK" with title "Obsidian Vault Status"
-    on error msg
-        display alert "Error retrieving vault status" message msg as critical
-    end try
-end showVaultStatus
-
-on exportNotesAndIngest()
-    tell application "Notes"
-        -- Check if "Processed Ideas" folder exists, create it if not
-        if not (exists folder "Processed Ideas") then
-            make new folder with properties {name:"Processed Ideas"}
+    set ideaNotes to {}
+    
+    -- Gather all notes that contain the @idea tag and are not in "Processed Ideas" or "Recently Deleted"
+    set allNotes to every note
+    repeat with aNote in allNotes
+        set noteFolder to container of aNote
+        set folderName to name of noteFolder
+        if (folderName is not "Processed Ideas") and (folderName is not "Recently Deleted") then
+            if (body of aNote contains "@idea") or (plaintext of aNote contains "@idea") then
+                copy aNote to end of ideaNotes
+            end if
+        end if
+    end repeat
+    
+    set exportCount to 0
+    
+    repeat with theNote in ideaNotes
+        set noteName to name of theNote
+        set noteBody to plaintext of theNote
+        
+        -- Generate safe filename
+        set safeName to my sanitizeFilename(noteName)
+        if safeName is "" then
+            set safeName to "Note_" & (time of (current date))
         end if
         
-        set ideaNotes to {}
+        -- Assemble full destination path
+        set exportFilename to safeName & "_" & (time of (current date)) & ".txt"
+        set exportFilePath to projectInputPath & exportFilename
         
-        -- Gather all notes that contain the @idea tag and are not in "Processed Ideas" or "Recently Deleted"
-        set allNotes to every note
-        repeat with aNote in allNotes
-            set noteFolder to container of aNote
-            set folderName to name of noteFolder
-            if (folderName is not "Processed Ideas") and (folderName is not "Recently Deleted") then
-                if (body of aNote contains "@idea") or (plaintext of aNote contains "@idea") then
-                    copy aNote to end of ideaNotes
-                end if
-            end if
-        end repeat
+        -- Export content
+        set success to my writeTextToFile(noteBody, exportFilePath)
         
-        set exportCount to 0
-        
-        repeat with theNote in ideaNotes
-            set noteName to name of theNote
-            set noteBody to plaintext of theNote
-            
-            -- Generate safe filename
-            set safeName to my sanitizeFilename(noteName)
-            if safeName is "" then
-                set safeName to "Note_" & (time of (current date))
-            end if
-            
-            -- Assemble full destination path
-            set exportFilename to safeName & "_" & (time of (current date)) & ".txt"
-            set exportFilePath to projectInputPath & exportFilename
-            
-            -- Export content
-            set success to my writeTextToFile(noteBody, exportFilePath)
-            
-            if success then
-                -- Move note to the "Processed Ideas" folder in Apple Notes
-                move theNote to folder "Processed Ideas"
-                set exportCount to exportCount + 1
-            end if
-        end repeat
-        
-        if exportCount > 0 then
-            -- Automatically run the python pipeline after export
-            do shell script "cd /Users/fanibhushan/voice-idea-capture && .venv/bin/python -m src.main run"
-            display notification "Successfully processed " & exportCount & " ideas into Obsidian." with title "Idea Pipeline"
-        else
-            display notification "No new @idea notes to export." with title "Idea Pipeline"
+        if success then
+            -- Move note to the "Processed Ideas" folder in Apple Notes
+            move theNote to folder "Processed Ideas"
+            set exportCount to exportCount + 1
         end if
-    end tell
-end exportNotesAndIngest
+    end repeat
+    
+    return exportCount
+end tell
 
 -- Helper function to write text to a file
 on writeTextToFile(textData, filePath)

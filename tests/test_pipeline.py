@@ -169,3 +169,44 @@ def test_vault_manager_save_note_to_vault_with_collision(tmp_path: Path) -> None
     
     assert Path(path1).name == "Collision.md"
     assert Path(path2).name == "Collision-1.md"
+
+@patch("src.main.run_command")
+def test_cli_argparse_overrides(mock_run) -> None:
+    from src.main import main
+    import sys
+    
+    # Simulate: idea-capture --input-dir /tmp/in --processed-dir /tmp/proc --vault-path /tmp/vault run
+    test_args = [
+        "idea-capture",
+        "--input-dir", "/tmp/in",
+        "--processed-dir", "/tmp/proc",
+        "--vault-path", "/tmp/vault",
+        "run"
+    ]
+    with patch.object(sys, "argv", test_args):
+        # Mock Path.mkdir to prevent actual filesystem changes
+        with patch("pathlib.Path.mkdir") as mock_mkdir:
+            main()
+            mock_run.assert_called_once_with(
+                Path("/tmp/in"),
+                Path("/tmp/proc"),
+                Path("/tmp/vault")
+            )
+
+@patch("src.main.subprocess.run")
+def test_cli_run_sync_integration(mock_run) -> None:
+    from src.main import main
+    import sys
+    
+    mock_response = MagicMock()
+    mock_response.stdout = "0"
+    mock_run.return_value = mock_response
+    
+    test_args = ["idea-capture", "run"]
+    with patch.object(sys, "argv", test_args):
+        with patch("pathlib.Path.mkdir") as mock_mkdir:
+            main()
+            mock_run.assert_called_once()
+            args_called = mock_run.call_args[0][0]
+            assert "osascript" in args_called
+            assert "export_ideas.applescript" in args_called[1]

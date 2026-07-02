@@ -2,8 +2,6 @@
 __pycache__/
 *.pyc
 db/*.db
-input/*
-!input/.gitkeep
-processed/*
-!processed/.gitkeep
+
 .env
+*.egg-info/

@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=61.0.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "voice-idea-capture"
+version = "0.1.0"
+description = "A voice-first idea capture and Obsidian ingestion pipeline."
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "google-genai",
+    "python-dotenv",
+    "watchdog",
+    "pydantic"
+]
+
+[project.scripts]
+idea-capture = "src.main:main"
+
+[tool.setuptools]
+packages = ["src"]
