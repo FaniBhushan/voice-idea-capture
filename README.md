@@ -3,27 +3,27 @@
 A collaborative project to build a local-first automation pipeline that ingests raw voice-dictation transcripts, enriches them with LLM metadata, and stores them in Obsidian.
 
 ## 🗺️ Project Scope
-- **Ingestion Pipeline**: Watches or scans an `input/` folder for text files (`.txt` or `.md`).
+- **Ingestion Pipeline**: Watches or scans the hidden input directory `~/.voice-idea-capture/input` for text files (`.txt` or `.md`).
 - **LLM Enrichment**: Leverages the Gemini API to analyze the raw notes, generate structured YAML metadata (adhering to a Pydantic schema for categorization, status, effort, next actions, etc.), and summarize the core ideas.
-- **Vault Management**: Formats the enriched data as Markdown, checks for existing title conflicts, and writes the notes to an Obsidian vault.
-- **Archiving**: Moves processed raw inputs to a `processed/` directory.
+- **Vault Management**: Formats the enriched data as Markdown, checks for existing title conflicts, and writes the notes to your Obsidian vault.
+- **Archiving**: Moves processed raw inputs to `~/.voice-idea-capture/processed/`.
 
 ## 🔄 Ingestion Pipeline Flow
 
 ### High-Level Conceptual Flow
 ```mermaid
 graph LR
-    Input[(input/ transcript)] -->|Detects change| Watcher[Watcher]
+    Input[(~/.voice-idea-capture/input/)] -->|Detects change| Watcher[Watcher]
     Watcher -->|Read transcript| Enricher[Enricher]
     Enricher -->|Structured metadata| VaultMgr[Vault Manager]
     VaultMgr -->|Check & write note| Vault[(Obsidian Vault)]
-    Watcher -->|Move raw file| Archive[(processed/ folder)]
+    Watcher -->|Move raw file| Archive[(~/.voice-idea-capture/processed/)]
 ```
 
 ### Detailed Component Flow
 ```mermaid
 graph TD
-    A[🎤 Voice Dictation] -->|Save Text/MD| B(input/ folder)
+    A[🎤 Voice Dictation] -->|Save Text/MD| B(~/.voice-idea-capture/input/)
     B -->|File Created / watchdog| C[watcher.py]
     C -->|Trigger Processing| D[main.py / CLI]
     D -->|Read File Content| E[vault_manager.py]
@@ -33,23 +33,11 @@ graph TD
     H -->|Return Structured JSON| G
     G -->|Return Enriched Data| D
     D -->|Generate Markdown & Frontmatter| E
-    E -->|Write File| I[obsidian_vault/]
-    D -->|Move Raw Input File| J[processed/ folder]
+    E -->|Write File| I[Obsidian Vault]
+    D -->|Move Raw Input File| J[~/.voice-idea-capture/processed/]
 ```
 
-## 📂 Directory Structure
-- `src/`: Core Python pipeline source files.
-  - `main.py`: CLI interface entry point.
-  - `config.py`: Configures paths, environment variables, and ensures directory existence.
-  - `watcher.py`: Uses `watchdog` to monitor folders and trigger processing callbacks.
-  - `enrichment.py`: Contains LLM schema validation and Gemini API wrapper.
-  - `vault_manager.py`: Handles title checking and markdown note writing.
-- `input/`: Folder where new dictations should be placed.
-- `processed/`: Archive directory for completed input transcripts.
-- `obsidian_vault/`: Default destination path for Obsidian markdown notes.
-- `shortcuts/`: AppleScript shortcuts for automating tasks.
-- `.env`: Environment variables for configuration.
-- `pyproject.toml`: Project configuration and dependencies. 
+
 
 ## ⚙️ Setup & Configuration
 1. Initialize virtual environment and install the package:
