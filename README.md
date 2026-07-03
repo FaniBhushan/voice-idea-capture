@@ -116,3 +116,40 @@ You can override any environment configuration paths directly using CLI flags:
   echo 'alias idea-capture="/path/to/voice-idea-capture/.venv/bin/idea-capture"' >> ~/.zshrc
   source ~/.zshrc
   ```
+
+
+## 🔮 Actionable Roadmap & Improvement Ideas
+
+To transition the prototype into a robust product, future enhancements are structured into three development phases:
+
+### Phase 1: Obsidian Prioritization & Visualization
+Tools to help you organize and prioritize ideas within Obsidian today.
+
+| Feature / Improvement | Actionable Steps | Impact | Complexity |
+| :--- | :--- | :---: | :---: |
+| **Kanban Board Integration** | 1. Set up a Kanban card layout based on note frontmatter status.<br>2. Let users drag notes between status columns. | **High** | **Easy** |
+| **Dataview Priority Queries** | 1. Add SQL-like queries inside notes to filter by `value` and `effort`.<br>2. Sort notes by priority (e.g., High Value + Low Effort first). | **High** | **Easy** |
+| **Canvas / Mind Map Maker** | 1. Write script to parse tags and next actions.<br>2. Generate an Obsidian `.canvas` file showing visual linkages between projects. | **Medium** | **Hard** |
+
+---
+
+### Phase 2: Core Ingestion & OS Integration
+Focuses on making dictation capture faster and support more formats.
+
+| Feature / Improvement | Actionable Steps | Impact | Complexity |
+| :--- | :--- | :---: | :---: |
+| **Direct Audio Transcription** | 1. Update CLI to accept audio extensions (`.mp3`, `.m4a`, `.wav`).<br>2. Pass the audio stream directly to Gemini's multimodal API.<br>3. Extract and save the transcript before enrichment. | **High** | **Easy** |
+| **Siri Shortcuts Integration** | 1. Create a Siri Shortcut to record voice memos on Apple Watch / iPhone.<br>2. Auto-tag with `@idea` and save to Apple Notes.<br>3. Syncs via iCloud to the Mac notes directory. | **High** | **Easy** |
+| **Interactive Conflict CLI** | 1. Detect title collisions during the `run` command.<br>2. Prompt the user: `[O]verwrite / [M]erge / [R]ename / [S]uffix`. | **Medium** | **Medium** |
+
+---
+
+### Phase 3: Packaged Local Web Dashboard
+A fully self-contained Web UI to search, prioritize, and visualize notes.
+
+| Feature / Improvement | Actionable Steps | Impact | Complexity |
+| :--- | :--- | :---: | :---: |
+| **Local FastAPI Server** | 1. Create local API endpoints (`/api/notes`) in Python to parse markdown files.<br>2. Serve compiled React frontend assets from FastAPI. | **High** | **Medium** |
+| **Fuzzy Search & Filters** | 1. Integrate `Fuse.js` in the frontend for instant search.<br>2. Add custom filters for category, status, and tag. | **High** | **Medium** |
+| **Effort vs. Value Matrix** | 1. Build an interactive scatter plot grid (Effort vs. Value).<br>2. Highlight *Quick Wins* (High Value, Low Effort) in green. | **High** | **Medium** |
+| **Single-File Packaging** | 1. Use `PyInstaller` to compile Python, FastAPI, and React into a single binary.<br>2. Add `idea-capture dashboard` CLI launcher command. | **Medium** | **Hard** |
