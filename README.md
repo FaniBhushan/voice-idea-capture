@@ -2,6 +2,19 @@
 
 A collaborative project to build a local-first automation pipeline that ingests raw voice-dictation transcripts, enriches them with LLM metadata, and stores them in Obsidian.
 
+## 📋 Table of Contents
+- [🗺️ Project Scope](#️-project-scope)
+- [🔄 Ingestion Pipeline Flow](#-ingestion-pipeline-flow)
+  - [High-Level Conceptual Flow](#high-level-conceptual-flow)
+  - [Detailed Component Flow](#detailed-component-flow)
+- [⚙️ Setup & Configuration](#️-setup--configuration)
+- [🚀 CLI Commands](#-cli-commands)
+  - [Command Line Options](#️-command-line-options)
+  - [macOS Integration & Automation](#-macos-integration--automation)
+- [🔮 Actionable Roadmap & Improvement Ideas](#-actionable-roadmap--improvement-ideas)
+
+---
+
 ## 🗺️ Project Scope
 - **Ingestion Pipeline**: Watches or scans the hidden input directory `~/.voice-idea-capture/input` for text files (`.txt` or `.md`).
 - **LLM Enrichment**: Leverages the Gemini API to analyze the raw notes, generate structured YAML metadata (adhering to a Pydantic schema for categorization, status, effort, next actions, etc.), and summarize the core ideas.
